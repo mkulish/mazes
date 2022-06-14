@@ -1,0 +1,10 @@
+# Routes Config
+
+module:testrunner
+
+POST    /user   App.Register
+POST    /login  App.Login
+
+GET     /maze                   Maze.Search
+POST    /maze                   Maze.Create
+Get     /maze/:id/solution      Maze.Solution

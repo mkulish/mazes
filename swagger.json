@@ -1,0 +1,495 @@
+{
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "schemes": [
+    "https"
+  ],
+  "swagger": "2.0",
+  "info": {
+    "description": "Backend #2 demo project",
+    "title": "Maze API",
+    "contact": {
+      "name": "Max",
+      "email": "max-kulishev@gmail.com"
+    },
+    "license": {
+      "name": "MIT",
+      "url": "http://opensource.org/licenses/MIT"
+    },
+    "version": "0.0.1"
+  },
+  "host": "mazes.demo.pics",
+  "basePath": "/",
+  "paths": {
+    "/login": {
+      "post": {
+        "description": "Performs login",
+        "tags": [
+          "user"
+        ],
+        "operationId": "login",
+        "parameters": [
+          {
+            "description": "login data",
+            "name": "user",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "description": "login data",
+              "type": "object",
+              "$ref": "#/definitions/User"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "LoginResponse",
+            "schema": {
+              "$ref": "#/definitions/LoginResponse"
+            }
+          },
+          "400": {
+            "description": "ValidationError",
+            "schema": {
+              "$ref": "#/definitions/ValidationError"
+            }
+          },
+          "500": {
+            "description": "InternalError",
+            "schema": {
+              "$ref": "#/definitions/InternalError"
+            }
+          }
+        }
+      }
+    },
+    "/maze": {
+      "get": {
+        "security": [
+          {
+            "oauth2": [
+              "read"
+            ]
+          }
+        ],
+        "description": "Search mazes",
+        "tags": [
+          "maze"
+        ],
+        "operationId": "searchMazes",
+        "responses": {
+          "200": {
+            "description": "MazeSearchResponse",
+            "schema": {
+              "$ref": "#/definitions/MazeSearchResponse"
+            }
+          },
+          "400": {
+            "description": "ValidationError",
+            "schema": {
+              "$ref": "#/definitions/ValidationError"
+            }
+          },
+          "401": {
+            "description": "UnauthorizedError",
+            "schema": {
+              "$ref": "#/definitions/UnauthorizedError"
+            }
+          },
+          "500": {
+            "description": "InternalError",
+            "schema": {
+              "$ref": "#/definitions/InternalError"
+            }
+          }
+        }
+      },
+      "post": {
+        "security": [
+          {
+            "oauth2": [
+              "write"
+            ]
+          }
+        ],
+        "description": "Creates a maze, performs validation and path processing",
+        "tags": [
+          "maze"
+        ],
+        "operationId": "createMaze",
+        "parameters": [
+          {
+            "description": "Maze data",
+            "name": "maze",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "description": "Maze data",
+              "type": "object",
+              "$ref": "#/definitions/Maze"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "MazeResponse",
+            "schema": {
+              "$ref": "#/definitions/MazeResponse"
+            }
+          },
+          "400": {
+            "description": "ValidationError",
+            "schema": {
+              "$ref": "#/definitions/ValidationError"
+            }
+          },
+          "401": {
+            "description": "UnauthorizedError",
+            "schema": {
+              "$ref": "#/definitions/UnauthorizedError"
+            }
+          },
+          "500": {
+            "description": "InternalError",
+            "schema": {
+              "$ref": "#/definitions/InternalError"
+            }
+          }
+        }
+      }
+    },
+    "/maze/{mazeId}/solution": {
+      "get": {
+        "security": [
+          {
+            "oauth2": [
+              "read"
+            ]
+          }
+        ],
+        "description": "Get maze solution",
+        "tags": [
+          "maze"
+        ],
+        "operationId": "getMazeSolution",
+        "parameters": [
+          {
+            "type": "integer",
+            "description": "Maze id",
+            "name": "mazeId",
+            "in": "path",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "return _min_ or _max_ possible steps in solution path",
+            "name": "steps",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "MazeSolutionResponse",
+            "schema": {
+              "$ref": "#/definitions/MazeSolutionResponse"
+            }
+          },
+          "400": {
+            "description": "ValidationError",
+            "schema": {
+              "$ref": "#/definitions/ValidationError"
+            }
+          },
+          "401": {
+            "description": "UnauthorizedError",
+            "schema": {
+              "$ref": "#/definitions/UnauthorizedError"
+            }
+          },
+          "500": {
+            "description": "InternalError",
+            "schema": {
+              "$ref": "#/definitions/InternalError"
+            }
+          }
+        }
+      }
+    },
+    "/user": {
+      "post": {
+        "description": "Registers a new user",
+        "tags": [
+          "user"
+        ],
+        "operationId": "registerUser",
+        "parameters": [
+          {
+            "description": "User signup data",
+            "name": "user",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "description": "User signup data",
+              "type": "object",
+              "$ref": "#/definitions/User"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "LoginResponse",
+            "schema": {
+              "$ref": "#/definitions/LoginResponse"
+            }
+          },
+          "400": {
+            "description": "ValidationError",
+            "schema": {
+              "$ref": "#/definitions/ValidationError"
+            }
+          },
+          "500": {
+            "description": "InternalError",
+            "schema": {
+              "$ref": "#/definitions/InternalError"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "InternalError": {
+      "description": "InternalError represents an unexpected internal error",
+      "type": "object",
+      "required": [
+        "ok",
+        "error"
+      ],
+      "properties": {
+        "error": {
+          "description": "Internal error",
+          "type": "string",
+          "x-go-name": "Error"
+        },
+        "ok": {
+          "description": "Operation success flag",
+          "type": "boolean",
+          "x-go-name": "OK"
+        }
+      },
+      "x-go-package": "github.com/mkulish/mazes/app/models"
+    },
+    "LoginResponse": {
+      "description": "LoginResponse represents login response JSON",
+      "type": "object",
+      "required": [
+        "ok",
+        "token"
+      ],
+      "properties": {
+        "ok": {
+          "description": "Operation success flag",
+          "type": "boolean",
+          "x-go-name": "OK"
+        },
+        "token": {
+          "description": "Auth token",
+          "type": "string",
+          "x-go-name": "Token"
+        }
+      },
+      "x-go-package": "github.com/mkulish/mazes/app/models"
+    },
+    "Maze": {
+      "description": "Maze represents maze object with grid",
+      "type": "object",
+      "required": [
+        "entrance",
+        "gridSize",
+        "walls"
+      ],
+      "properties": {
+        "entrance": {
+          "description": "Entrance cell on the grid",
+          "type": "string",
+          "pattern": "^[A-Z][1-9][0-9]?$",
+          "x-go-name": "Entrance",
+          "example": "A1"
+        },
+        "gridSize": {
+          "description": "Grid size (cols x rows, up to 27x99)",
+          "type": "string",
+          "pattern": "^([1-9]|1[0-9]|2[0-7])x[1-9][0-9]?$",
+          "x-go-name": "GridSize",
+          "example": "4x3"
+        },
+        "walls": {
+          "description": "Array of wall cells",
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Z][1-9][0-9]?$"
+          },
+          "x-go-name": "Walls",
+          "example": [
+            "B2",
+            "B4",
+            "C4"
+          ]
+        }
+      },
+      "x-go-package": "github.com/mkulish/mazes/app/models"
+    },
+    "MazeResponse": {
+      "description": "MazeResponse represents a JSON reponse with created maze id",
+      "type": "object",
+      "required": [
+        "ok",
+        "id"
+      ],
+      "properties": {
+        "id": {
+          "description": "Maze ID",
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "ID"
+        },
+        "ok": {
+          "description": "Operation success flag",
+          "type": "boolean",
+          "x-go-name": "OK"
+        }
+      },
+      "x-go-package": "github.com/mkulish/mazes/app/models"
+    },
+    "MazeSearchResponse": {
+      "description": "MazeSearchResponse represents a JSON reponse with mazes list",
+      "type": "object",
+      "required": [
+        "ok",
+        "items"
+      ],
+      "properties": {
+        "items": {
+          "description": "Mazes list",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Maze"
+          },
+          "x-go-name": "Items"
+        },
+        "ok": {
+          "description": "Operation success flag",
+          "type": "boolean",
+          "x-go-name": "OK"
+        }
+      },
+      "x-go-package": "github.com/mkulish/mazes/app/models"
+    },
+    "MazeSolutionResponse": {
+      "description": "MazeSolutionResponse represents a JSON reponse with maze solution path",
+      "type": "object",
+      "required": [
+        "ok",
+        "path"
+      ],
+      "properties": {
+        "ok": {
+          "description": "Operation success flag",
+          "type": "boolean",
+          "x-go-name": "OK"
+        },
+        "path": {
+          "description": "Cells path",
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "x-go-name": "Path"
+        }
+      },
+      "x-go-package": "github.com/mkulish/mazes/app/models"
+    },
+    "UnauthorizedError": {
+      "description": "UnauthorizedError represents an unauthorized access error",
+      "type": "object",
+      "required": [
+        "ok",
+        "error"
+      ],
+      "properties": {
+        "error": {
+          "description": "Unauthorized error",
+          "type": "string",
+          "x-go-name": "Error"
+        },
+        "ok": {
+          "description": "Operation success flag",
+          "type": "boolean",
+          "x-go-name": "OK"
+        }
+      },
+      "x-go-package": "github.com/mkulish/mazes/app/models"
+    },
+    "User": {
+      "description": "User represents user data",
+      "type": "object",
+      "required": [
+        "username",
+        "password"
+      ],
+      "properties": {
+        "password": {
+          "description": "Password",
+          "type": "string",
+          "maxLength": 15,
+          "minLength": 5,
+          "x-go-name": "Password",
+          "example": "test123!"
+        },
+        "username": {
+          "description": "Username",
+          "type": "string",
+          "maxLength": 15,
+          "minLength": 4,
+          "x-go-name": "Username",
+          "example": "mkulish"
+        }
+      },
+      "x-go-package": "github.com/mkulish/mazes/app/models"
+    },
+    "ValidationError": {
+      "type": "object",
+      "title": "ValidationError simple struct to store the Message \u0026 Key of a validation error.",
+      "required": [
+        "ok",
+        "errors"
+      ],
+      "properties": {
+        "Message": {
+          "type": "string",
+          "x-go-name": "Key"
+        }
+      },
+      "x-go-package": "github.com/revel/revel"
+    }
+  },
+  "securityDefinitions": {
+    "oauth2": {
+      "type": "oauth2",
+      "in": "header",
+      "flow": "accessCode",
+      "authorizationUrl": "",
+      "scopes": {
+        "read": "read access",
+        "write": "write access"
+      }
+    }
+  }
+}
